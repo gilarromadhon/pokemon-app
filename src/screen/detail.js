@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
+import Modal from 'react-modal';
+
+const customStyles = {
+  content: {
+    textAlign: 'center',
+    backgroundColor: 'white',
+    fontWeight: 'bold',
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
+Modal.setAppElement('#root');
 
 export default function Detail() {
     const { name } = useParams()
@@ -9,9 +26,10 @@ export default function Detail() {
     const [isCaught, setIsCaught] = useState(null);
     const [isCatching, setIsCatching] = useState(false); 
     const [loading, setLoading] = useState(false); 
+    const [menu, setMenu] = useState("stats")
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [error, setError] = useState(false);
     const navigate = useNavigate()
-
-
 
     useEffect(() => {
         setLoading(true);
@@ -33,6 +51,7 @@ export default function Detail() {
         setIsCatching(true);
         setTimeout(() => {
             const success = Math.random() < 0.5;
+            setIsOpen(true);
             setIsCaught(success);
             setIsCatching(false);
         }, 1000); 
@@ -53,13 +72,24 @@ export default function Detail() {
             
             const exists = myPokemon.some(p => p.name === pokemonData.name && p.alias_name === pokemonData.alias_name);
             if (exists) {
-                alert("Pokémon dengan nama dan alias yang sama sudah ada!");
-                return; // Hentikan eksekusi jika sudah ada
+                setError(true);
+                return; 
             }
             
             myPokemon.push(pokemonData);
             localStorage.setItem("myPokemon", JSON.stringify(myPokemon));
+            navigate("/my-pokemon")
         }
+    }
+
+    function changeMenu(value) {
+        setMenu(value)
+    }
+
+    function formatStats(value) {
+        if (value === "special-attack") return "sp. atk"
+        if (value === "special-defense") return "sp. def"
+        return value
     }
 
     const pokemonTypes = {
@@ -85,7 +115,7 @@ export default function Detail() {
     };
 
     return (
-        <div className="detail"  style={{ backgroundColor: pokemonTypes[type] }}>
+        <div className="detail" style={{ backgroundColor: pokemonTypes[type] }}>
             {
                 !loading && 
                 <div>
@@ -101,54 +131,72 @@ export default function Detail() {
                             }
                         </div>
                     </div>
-                    <div className="detail-image" style={{ position: 'relative' }}>
+                    <div className="detail-image">
                         <img src={data?.sprites?.other?.home.front_default} alt={name}/>
                     </div>
                     <div className="detail-description">
                         <div className="list-description">
-                            <label>Stats</label>
-                            <label>Move</label>
+                            <div>
+                                <label onClick={() => changeMenu('stats')} className={menu === 'stats' ? 'active' : '' }>Stats</label>
+                                <label onClick={() => changeMenu('moves')} className={menu === 'moves' ? 'active' : '' }>Moves</label>
+                            </div>
+                            <button onClick={catchPokemon} disabled={isCatching} className="catch-button">
+                                {isCatching ? 'Catching...' : 'Catch'}
+                            </button>
                         </div>
-                        {
-                            data.stats?.map((item, index) => 
-                                <div key={index}>
-                                    {item.stat.name}
-                                    <div className="progress-bar">
-                                    <div
-                                        className="progress-bar-fill"
-                                        style={{ width: `${item.base_stat}%` }}
-                                    >
-                                        {item.base_stat}%
+                        <div hidden={menu !== "stats"}>
+                            {
+                                data.stats?.map((item, index) => 
+                                    <div key={index} className="detail-stats">
+                                        <label>{formatStats(item.stat.name)}</label>
+                                        <div className="progress-bar">
+                                            <div
+                                                className="progress-bar-fill"
+                                                style={{ width: `${item.base_stat}%` }}
+                                            >
+                                                {item.base_stat}
+                                            </div>
+                                        </div>
                                     </div>
+                                )
+                            }
+                        </div>
+
+                        <div hidden={menu !== "moves"}>
+                            {
+                                data.moves?.map((item, index) => 
+                                    <div key={index} className="detail-moves">
+                                        <li>{formatStats(item.move.name)}</li>
                                     </div>
-                                </div>
-                            )
-                        }
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             }
 
-            {/* <h1>Catch a Pokémon</h1> */}
-            {/* <div style={{ fontSize: '2rem', marginBottom: '20px' }}>
-                {isCatching ? 'Catching...' : isCaught === null ? 'Try to catch a Pokémon!' : isCaught ? 'Pokémon caught!' : 'Pokémon escaped!'}
-            </div>
-            <button onClick={catchPokemon} disabled={isCatching} style={{ padding: '10px 20px', fontSize: '1.5rem' }}>
-                {isCatching ? 'Catching...' : 'Catch Pokémon'}
-            </button>
-
-            <div hidden={!isCaught}>
-                <input 
-                    type="text" 
-                    placeholder="Masukkan nama Pokémon" 
-                    value={pokemon.name || ''} 
-                    onChange={(e) => setPokemon({ ...pokemon, name: e.target.value })} 
-                />
-                <button onClick={() => savePokemon()}>Simpan</button>
-            </div>
-            <div hidden={isCaught || isCaught == null}>
-                <label>Pokemon Escape</label>
-                <button onClick={() => navigate(-1)}>Ok</button>
-            </div> */}
+            <Modal
+                isOpen={modalIsOpen}
+                style={customStyles}
+                contentLabel="Modal"
+            >
+                <label className="modal">
+                    {isCatching ? 'Catching...' : isCaught === null ? 'Try to catch a Pokémon!' : isCaught ? 'Pokémon caught!' : 'Pokémon escaped!'}
+                </label>
+                <div hidden={!isCaught} className="modal-action">
+                    <input 
+                        hidden={!isCaught}
+                        type="text" 
+                        placeholder="Enter Pokémon name" 
+                        value={pokemon.name || ''} 
+                        onChange={(e) => setPokemon({ ...pokemon, name: e.target.value })} 
+                    />
+                    <p hidden={!error}>Pokémon with the same name and alias already exist!</p>
+                    <button hidden={!isCaught} onClick={() => savePokemon()}>Save</button>
+                    <button hidden={!isCaught} onClick={() => setIsOpen(false)} className="cancel" >Cancel</button>
+                    <button  hidden={isCaught || isCaught == null} onClick={() => setIsOpen(false)}>Ok</button>
+                </div>
+            </Modal>
         </div>
     )
 }

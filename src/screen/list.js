@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../App.css';
 import { useNavigate } from 'react-router-dom';
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function List() {
     const [data, setData] = useState([]);
@@ -12,7 +13,6 @@ export default function List() {
     const [id, setId] = useState([])
     const navigate = useNavigate()
   
-    
     useEffect(() => {
         setLoading(true);
         const fetchData = async () => {
@@ -90,34 +90,56 @@ export default function List() {
         stell: '#B7B7CE'
     };
 
+    const override = {
+        margin: "0 auto",
+        height: "90vh",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    };
+
     return (
       <div className="body">
-          <div className="list">
+            <BeatLoader
+                color={'gray'}
+                loading={loading}
+                cssOverride={override}
+                size={25}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+            />
+
             {
-                !loading && data.map((item, index) => 
-                    <div 
-                        key={item.name} 
-                        onClick={() => handleDetail(item.name)} 
-                        className="pokemon" 
-                        style={{ 
-                            backgroundColor: pokemonTypes[type[index]] || pokemonTypes.default,
-                        }}
-                    >
-                        <div>
-                            <label className="id">#0{id[index]}</label>
-                            <label>{item.name}</label>
-                            <label>{type[index]}</label>
-                        </div>
-                        <img key={index} src={img[index]} alt='pokemon' />
+                !loading && 
+                <div>
+                    <div className="list">
+                        {
+                            data.map((item, index) => 
+                                <div 
+                                    key={item.name} 
+                                    onClick={() => handleDetail(item.name)} 
+                                    className="pokemon" 
+                                    style={{ 
+                                        backgroundColor: pokemonTypes[type[index]] || pokemonTypes.default,
+                                    }}
+                                >
+                                    <div>
+                                        <label className="id">#0{id[index]}</label>
+                                        <label>{item.name}</label>
+                                        <label>{type[index]}</label>
+                                    </div>
+                                    <img key={index} src={img[index]} alt='pokemon' />
+                                </div>
+                            )
+                        }
                     </div>
-                )
+        
+                    <div className="pagination"> 
+                        <button className="custom-button" disabled={offSet === 0} onClick={handlePrevious}>Previous</button>
+                        <button className="custom-button" onClick={handleNext}>Next</button>
+                    </div>
+                </div>
             }
-          </div>
-  
-          <div className="pagination"> 
-            <button className="custom-button" disabled={offSet === 0} onClick={handlePrevious}>Previous</button>
-            <button className="custom-button" onClick={handleNext}>Next</button>
-          </div>
       </div>
     );
 }

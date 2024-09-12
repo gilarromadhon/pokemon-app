@@ -5,7 +5,6 @@ import { IoIosCloseCircle } from "react-icons/io";
 
 export default function Pokemon() {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
   
     useEffect(() => {
@@ -19,9 +18,9 @@ export default function Pokemon() {
         navigate('/detail/' + names, { state: { names } });
     }
 
-    function handleRelease(id) {
+    function handleRelease(name) {
         const myPokemon = JSON.parse(localStorage.getItem("myPokemon"));
-        const updatedPokemon = myPokemon.filter(pokemon => pokemon.id !== id);
+        const updatedPokemon = myPokemon.filter(pokemon => pokemon.alias_name !== name);
         localStorage.setItem("myPokemon", JSON.stringify(updatedPokemon));
         setData(updatedPokemon)
     }
@@ -53,7 +52,7 @@ export default function Pokemon() {
             <h3>You have {data?.length || '0'} pokemon</h3>
             <div className="list">
                 {
-                    !loading && data?.map((item, index) => 
+                    data?.map((item, index) => 
                         <div 
                             key={item.name} 
                             // onClick={() => handleDetail(item.name)} 
@@ -63,7 +62,7 @@ export default function Pokemon() {
                                 position: 'relative'
                             }}
                         >   
-                            <IoIosCloseCircle onClick={() => handleRelease(item.id)} size={30} style={{ position: 'absolute', right: 5, top: 5, cursor: 'pointer', zIndex: 999 }} />
+                            <IoIosCloseCircle onClick={() => handleRelease(item.alias_name)} size={30} style={{ position: 'absolute', right: 5, top: 5, cursor: 'pointer', zIndex: 999 }} />
                             <div>
                                 <label className="name">{item.name}</label>
                                 <label>{item.alias_name}</label>

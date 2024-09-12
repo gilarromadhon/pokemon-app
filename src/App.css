@@ -163,6 +163,8 @@ footer h5 {
 
 .detail {
   background-color: rgb(252, 252, 252);
+  margin-top: -10vh;
+  padding-top: 10vh;
   /* padding: 20px; */
 }
 
@@ -213,7 +215,7 @@ footer h5 {
 
 .detail-description {
   background-color: white;
-  padding: 40px 20px;
+  padding: 30px 20px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   color: black !important
@@ -222,11 +224,91 @@ footer h5 {
 .list-description {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.list-description div {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 80px;
+}
+
+.list-description .active {
+  border-bottom: 1px solid black;
+}
+
+.detail-stats {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.detail-stats label {
+  display: flex;
+  align-items: center;
+  width: 30%;
+  font-size: 12px;
+}
+
+.detail-moves {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.catch-button {
+  height: 30px;
+  width: 100px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgb(210, 64, 64);
+  color: white;
+  font-weight: bold;
+}
+
+.modal-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.modal-action input {
+  border: none;
+  padding: 10px 20px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #8a898947;
+}
+
+.modal-action button {
+  border: none;
+  height: 30px;
+  width: 100px;
+  border-radius: 10px;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+
+.modal-action button.cancel {
+  background-color: rgb(210, 64, 64);
+}
+
+.modal-action p {
+  color: red;
+  font-size: 12px;
 }
 
 .progress-bar {
   width: 100%;
-  background-color: #515151;
+  background-color: #dddddd;
   border-radius: 8px;
   overflow: hidden;
 }
