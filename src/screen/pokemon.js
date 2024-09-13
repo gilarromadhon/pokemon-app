@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import '../App.css';
-import { useNavigate } from 'react-router-dom';
 import { IoIosCloseCircle } from "react-icons/io";
 
 export default function Pokemon() {
     const [data, setData] = useState([]);
-    const navigate = useNavigate()
   
     useEffect(() => {
         if (localStorage.getItem("myPokemon") !== null || localStorage.getItem("myPokemon") !== undefined) {
@@ -14,10 +12,6 @@ export default function Pokemon() {
         }
     }, []);
     
-    function handleDetail(names) {
-        navigate('/detail/' + names, { state: { names } });
-    }
-
     function handleRelease(name) {
         const myPokemon = JSON.parse(localStorage.getItem("myPokemon"));
         const updatedPokemon = myPokemon.filter(pokemon => pokemon.alias_name !== name);
@@ -49,25 +43,28 @@ export default function Pokemon() {
 
     return (
       <div className="body">
-            <h3>You have {data?.length || '0'} pokemon</h3>
+            {
+                data?.length > 0 
+                    ? <h3>You have {data.length} pokemon</h3>
+                    : <h3>You don't have pokemon</h3>
+            }
             <div className="list">
                 {
                     data?.map((item, index) => 
                         <div 
                             key={item.name} 
-                            // onClick={() => handleDetail(item.name)} 
                             className="pokemon" 
                             style={{ 
                                 backgroundColor: pokemonTypes[item.type],
                                 position: 'relative'
                             }}
                         >   
-                            <IoIosCloseCircle onClick={() => handleRelease(item.alias_name)} size={30} style={{ position: 'absolute', right: 5, top: 5, cursor: 'pointer', zIndex: 999 }} />
+                            <IoIosCloseCircle onClick={() => handleRelease(item.alias_name)} size={30} style={{ position: 'absolute', right: 5, top: 5, cursor: 'pointer', zIndex: 998 }} />
                             <div>
                                 <label className="name">{item.name}</label>
                                 <label>{item.alias_name}</label>
                             </div>
-                            <img key={index} src={item.image} alt='pokemon' />
+                            <img key={item.name} src={item.image} alt='pokemon' />
                         </div>
                     )
                 }

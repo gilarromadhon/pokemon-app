@@ -24,7 +24,7 @@ function Header() {
             ? <IoArrowBackOutline size={20} onClick={() => navigate('-1')} /> 
             : <div style={{ width: 20 }}></div>
         }
-      <SiPokemon size={70} color='yellow' />
+        <SiPokemon size={70} color='yellow' />
         {
           location.pathname !== "/my-pokemon" 
             ? <img src={Image} alt='icon' style={{ width: 30 }} onClick={() => navigate('/my-pokemon')} />

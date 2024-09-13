@@ -27,7 +27,7 @@ export default function Detail() {
     const [isCatching, setIsCatching] = useState(false); 
     const [loading, setLoading] = useState(false); 
     const [menu, setMenu] = useState("stats")
-    const [modalIsOpen, setIsOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     const [error, setError] = useState(false);
     const navigate = useNavigate()
 
@@ -45,13 +45,13 @@ export default function Detail() {
           }
         };
         fetchData();
-    }, []);
+    }, [name]);
 
     const catchPokemon = () => {
         setIsCatching(true);
         setTimeout(() => {
             const success = Math.random() < 0.5;
-            setIsOpen(true);
+            setOpen(true);
             setIsCaught(success);
             setIsCatching(false);
         }, 1000); 
@@ -124,7 +124,7 @@ export default function Detail() {
                         <div className="detail-type">
                             {
                                 data.types?.map((item, index) => 
-                                    <label key={index}>
+                                    <label key={item.type.name}>
                                         {item.type.name}
                                     </label>
                                 )
@@ -147,7 +147,7 @@ export default function Detail() {
                         <div hidden={menu !== "stats"}>
                             {
                                 data.stats?.map((item, index) => 
-                                    <div key={index} className="detail-stats">
+                                    <div key={item.stat.name} className="detail-stats">
                                         <label>{formatStats(item.stat.name)}</label>
                                         <div className="progress-bar">
                                             <div
@@ -165,7 +165,7 @@ export default function Detail() {
                         <div hidden={menu !== "moves"}>
                             {
                                 data.moves?.map((item, index) => 
-                                    <div key={index} className="detail-moves">
+                                    <div key={item.move.name} className="detail-moves">
                                         <li>{formatStats(item.move.name)}</li>
                                     </div>
                                 )
@@ -176,12 +176,12 @@ export default function Detail() {
             }
 
             <Modal
-                isOpen={modalIsOpen}
+                isOpen={open}
                 style={customStyles}
                 contentLabel="Modal"
             >
                 <label className="modal">
-                    {isCatching ? 'Catching...' : isCaught === null ? 'Try to catch a Pokémon!' : isCaught ? 'Pokémon caught!' : 'Pokémon escaped!'}
+                    {isCaught ? 'Pokémon caught!' : 'Pokémon escaped!'}
                 </label>
                 <div hidden={!isCaught} className="modal-action">
                     <input 
@@ -193,8 +193,8 @@ export default function Detail() {
                     />
                     <p hidden={!error}>Pokémon with the same name and alias already exist!</p>
                     <button hidden={!isCaught} onClick={() => savePokemon()}>Save</button>
-                    <button hidden={!isCaught} onClick={() => setIsOpen(false)} className="cancel" >Cancel</button>
-                    <button  hidden={isCaught || isCaught == null} onClick={() => setIsOpen(false)}>Ok</button>
+                    <button hidden={!isCaught} onClick={() => setOpen(false)} className="cancel">Cancel</button>
+                    <button  hidden={isCaught || isCaught == null} onClick={() => setOpen(false)}>Ok</button>
                 </div>
             </Modal>
         </div>

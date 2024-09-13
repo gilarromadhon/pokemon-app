@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import '../App.css';
 import { useNavigate } from 'react-router-dom';
-import BeatLoader from "react-spinners/BeatLoader";
+import '../App.css';
+import Image from "../assets/pokeball-icon.png"
 
 export default function List() {
     const [data, setData] = useState([]);
-    const [limit] = useState(20)
-    const [offSet, setOffSet] = useState(0)
+    const [limit] = useState(10)
+    const [offSet, setOffSet] = useState(localStorage.getItem("offset") != null ? Number(localStorage.getItem("offset")) : 0)
     const [loading, setLoading] = useState(false)
     const [img, setImg] = useState([])
     const [type, setType] = useState([])
     const [id, setId] = useState([])
     const navigate = useNavigate()
-  
+
     useEffect(() => {
         setLoading(true);
         const fetchData = async () => {
@@ -33,6 +33,7 @@ export default function List() {
             }
         };
         fetchData();
+        localStorage.setItem("offset", offSet)
     }, [offSet, limit]);
 
 
@@ -90,27 +91,10 @@ export default function List() {
         stell: '#B7B7CE'
     };
 
-    const override = {
-        margin: "0 auto",
-        height: "90vh",
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    };
-
     return (
       <div className="body">
-            <BeatLoader
-                color={'gray'}
-                loading={loading}
-                cssOverride={override}
-                size={25}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-            />
-
             {
-                !loading && 
+                !loading ?
                 <div>
                     <div className="list">
                         {
@@ -128,7 +112,7 @@ export default function List() {
                                         <label>{item.name}</label>
                                         <label>{type[index]}</label>
                                     </div>
-                                    <img key={index} src={img[index]} alt='pokemon' />
+                                    <img key={item.name} src={img[index]} alt='pokemon' />
                                 </div>
                             )
                         }
@@ -138,6 +122,11 @@ export default function List() {
                         <button className="custom-button" disabled={offSet === 0} onClick={handlePrevious}>Previous</button>
                         <button className="custom-button" onClick={handleNext}>Next</button>
                     </div>
+                </div> : 
+                <div className="loading">
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 20, height: 20 }}  />
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 40, height: 40 }}  />
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 20, height: 20 }}  />
                 </div>
             }
       </div>
