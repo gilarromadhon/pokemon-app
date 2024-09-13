@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
+import Image from "../assets/pokeball-icon.png"
 
 const customStyles = {
   content: {
@@ -116,9 +117,9 @@ export default function Detail() {
     };
 
     return (
-        <div className="detail" style={{ backgroundColor: pokemonTypes[type] }}>
+        <div className="detail" style={!loading ? { backgroundColor: pokemonTypes[type] } : {}}>
             {
-                !loading && 
+                !loading ?
                 <div>
                     <div className="detail-header">
                         <label className="name">{data.name}</label>
@@ -173,6 +174,11 @@ export default function Detail() {
                             }
                         </div>
                     </div>
+                </div> : 
+                <div className="loading">
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 20, height: 20 }}  />
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 40, height: 40 }}  />
+                    <img src={Image} alt='icon' className="pokeball-icon" style={{ width: 20, height: 20 }}  />
                 </div>
             }
 
