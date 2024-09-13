@@ -67,6 +67,7 @@ export default function Detail() {
         }
         if (localStorage.getItem("myPokemon") == null || localStorage.getItem("myPokemon") === undefined) {
             localStorage.setItem("myPokemon", JSON.stringify([pokemonData]));
+            navigate("/my-pokemon")
         } else {
             const myPokemon = JSON.parse(localStorage.getItem("myPokemon"));
             
